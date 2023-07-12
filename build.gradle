@@ -1,0 +1,94 @@
+plugins {
+	id 'java-library'
+	// id 'java'
+	id 'org.springframework.boot' version '3.1.1' apply false
+	id 'io.spring.dependency-management' version '1.1.0'
+    id 'maven-publish'
+}
+
+group = 'fr.adias'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencyManagement {
+	imports {
+		mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+	}
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Dah733/DependenciesExposer")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+dependencies {
+	// implementation gradleApi()
+  	// implementation('org.springframework.boot:spring-boot-starter-web') {
+    //     exclude group: 'ch.qos.logback'
+    // }
+    api 'org.springframework.boot:spring-boot-starter-web'
+    // api 'org.springframework.boot:spring-boot-autoconfigure:3.1.1'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+task printSolvedDepsTreeInJson {
+    doLast {
+        def jsonOutput = "["
+        configurations.compileClasspath.resolvedConfiguration.firstLevelModuleDependencies.each { dep ->
+            def addToJson
+            addToJson = { resolvedDep ->
+                jsonOutput += "\n{"
+                jsonOutput += "\"groupId\":\"${resolvedDep.module.id.group}\",\"artifactId\":\"${resolvedDep.module.id.name}\",\"version\":\"${resolvedDep.module.id.version}\""
+                jsonOutput += ",\"dependencies\":["
+                if (resolvedDep.children.size() != 0) {
+                    resolvedDep.children.each { childResolvedDep ->
+                        if (resolvedDep in childResolvedDep.getParents() && childResolvedDep.getConfiguration() == 'compile') {
+                            addToJson(childResolvedDep)
+                        }
+                    }
+                    if (jsonOutput[-1] == ',') {
+                        jsonOutput = jsonOutput[0..-2]
+                    }
+                }
+                jsonOutput += "]},"
+            }
+            addToJson(dep)
+        }
+        if (jsonOutput[-1] == ',') {
+            jsonOutput = jsonOutput[0..-2]
+        }
+        jsonOutput += "\n]"
+
+	File file = new File('dependencies.json')
+	file.write(jsonOutput)
+	println "Dependencies saved to dependencies.json"
+
+    }
+}
+
