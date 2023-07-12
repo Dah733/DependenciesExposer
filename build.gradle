@@ -30,8 +30,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/Dah733/DependenciesExposer")
             credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+                username = project.findProperty("user") ?: System.getenv("USERNAME")
+                password = project.findProperty("token") ?: System.getenv("TOKEN")
             }
         }
     }
@@ -47,7 +47,7 @@ dependencies {
   	// implementation('org.springframework.boot:spring-boot-starter-web') {
     //     exclude group: 'ch.qos.logback'
     // }
-    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter-web:3.1.1'
     // api 'org.springframework.boot:spring-boot-autoconfigure:3.1.1'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
