@@ -30,7 +30,6 @@ import java.util.Map;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/dependencies")
-// @ConditionalOnProperty(name = "dependencies.api.enabled", havingValue = "true")
 public class DependencyController {
 
     private final ResourceLoader resourceLoader;

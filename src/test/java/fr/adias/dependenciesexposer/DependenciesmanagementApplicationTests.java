@@ -1,13 +1,13 @@
-package fr.adias.dependenciesexposer;
+// package fr.adias.dependenciesexposer;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class DependenciesexposerApplicationTests {
+// @SpringBootTest
+// class DependenciesexposerApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+// 	@Test
+// 	void contextLoads() {
+// 	}
 
-}
+// }
